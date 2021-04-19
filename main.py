@@ -9,40 +9,44 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
+from functions import f_columnas_tiempos,f_columnas_pips,f_estadisticas_ba
+from functions import f_evolucion_capital , f_estadisticas_mad, f_be_de
+from data import f_leer_archivo
+import numpy as np
 import pandas as pd
-import data as dt
 
-# -- TEST 1 : 
-# verify that the script is being read
-print(dt.dict_test)
 
-# -- TEST 2 :
-# verify that installed pandas module works correctly
-df_dict_test = pd.DataFrame(dt.dict_test, index=[0, 1])
-print(df_dict_test)
+# ---------------------------------------------------------------------------------------- Parte 1
 
-# -- TEST 3 :
-# verify you can use plotly and visualize plots in jupyter notebook
+#Funcion desde regresa un dataframe con toda la informacion del archivo.
+data = f_leer_archivo('MyST_LAB2_J.xlsx','Historico MT4')
 
-import chart_studio.plotly as py   # various tools (jupyter offline print)
-import plotly.graph_objects as go  # plotting engine
+#Funcion donde el mismo Dataframe convertimos las columnas a tipo Datetime
+data2 = f_columnas_tiempos(data)
 
-# example data
-df = pd.DataFrame({'column_a': [1, 2, 3, 4, 5], 'column_b': [1, 2, 3, 4, 5]})
-# basic plotly plot
-data = [go.Bar(x=df['column_a'], y=df['column_b'])]
-# instruction to view it inside jupyter
-py.iplot(data, filename='jupyter-basic_bar')
-# (alternatively) instruction to view it in web app of plotly
-# py.plot(data)
+#Funcion para obtener el número multiplicador para expresar la diferencia de precios en pips.
+data3 = f_columnas_pips(data2)
+param_data1 = f_columnas_pips(data2)
+param_data = param_data1.rename(str.lower, axis='columns')
+param_data = param_data.rename(columns={"profit_acm": "capital_acum" , 
+                                        "open_time": "opentime" , 
+                                        "close_time": "closetime"})
 
-# -- TEST 4 :
-# verify you can use plotly and visualize plots in web browser locally
+#Funcion donde obtenemos un diccionario con dos dataframes donde nos dice las estadisticas basicas y raking.
+data4 = f_estadisticas_ba(data3)
 
-import plotly.io as pio            # to define input-output of plots
-pio.renderers.default = "browser"  # to render the plot locally in your default web browser
 
-# basic plotly plot
-plot_data = go.Figure(go.Bar(x=df['column_a'], y=df['column_b']))
-# instruction to view it in specified render (in this case browser)
-plot_data.show()
+
+# ---------------------------------------------------------------------------------------- Parte 2
+
+#funcion cuya salida contiene un dataframe con fechas dia a dia que se hizo taiding (Quitando fines de semana)
+data5 = f_evolucion_capital(data3)
+
+#Función que regrese un DataFrame con los resultados de cada MAD expresadas en términos diarios   
+data6 = f_estadisticas_mad(data5)
+
+# ---------------------------------------------------------------------------------------- Parte 3
+
+data7 = f_be_de(data3)
+
+
