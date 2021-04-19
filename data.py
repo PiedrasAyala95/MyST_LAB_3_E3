@@ -9,4 +9,9 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-dict_test = {'key_a': 'a', 'key_b': 'b'}
+
+import pandas as pd
+
+def f_leer_archivo(param_archivo,param_hoja):
+    data = pd.read_excel('C:/Users/Andres/Desktop/Traiding/Laboratorio_3/Archivos/' + param_archivo , sheet_name=param_hoja)
+    return data
